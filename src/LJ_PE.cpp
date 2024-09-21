@@ -1,5 +1,6 @@
 #include "LJ_PE.h"
 #include <cmath>
+#include <iostream>
 
 // Function to calculate the distance between two atoms
 double calculate_distance(const Atom &a1, const Atom &a2)
@@ -31,18 +32,16 @@ double calculate_total_energy(const std::vector<Atom> &atoms)
         {
             double distance = calculate_distance(atoms[i], atoms[j]);
 
-            // Print the distance for each atom pair because energies don't match expected E output
             std::cout << "Distance between atom " << i << " and atom " << j << ": " << distance << " Å\n";
-
             if (distance < 0.01)
             {
                 std::cout << "Warning: Very small distance between atom " << i << " and atom " << j << ": " << distance << " Å\n";
             }
 
-            double lj_energy = calculate_lj_energy(distance); // Define lj_energy
+            double lj_energy = calculate_lj_energy(distance);
             std::cout << "Energy contribution from atom pair " << i << "-" << j << ": " << lj_energy << " kcal/mol\n";
 
-            total_energy += lj_energy; // Only add once
+            total_energy += lj_energy; // Add only once
         }
     }
     return total_energy;
