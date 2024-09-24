@@ -90,6 +90,12 @@ double central_difference_force(const std::vector<Atom> &atoms, int atom_index, 
     atoms_minus_h[atom_index].x -= h;
     double energy_plus_h = calculate_total_energy(atoms_plus_h);
     double energy_minus_h = calculate_total_energy(atoms_minus_h);
+
+    std::cout << "Energy at x+h: " << energy_plus_h << "\n";
+    std::cout << "Energy at x-h: " << energy_minus_h << "\n";
+    std::cout << std::setprecision(15) << "Energy at x+h: " << energy_plus_h << "\n";
+    std::cout << std::setprecision(15) << "Energy at x-h: " << energy_minus_h << "\n";
+
     return -(energy_plus_h - energy_minus_h) / (2 * h);
 }
 
@@ -160,7 +166,8 @@ std::vector<Atom> steepest_descent_optimization(std::vector<Atom> &atoms)
                 for (int k = 0; k < 3; ++k)
                 {
                     forces[i][k] += force[k];
-                    // forces[j][k] -= force[k]; don't need to account for negative since for loop condition change where the force application
+                    // forces[j][k] -= force[k];
+                    // don't need to account for negative since for loop condition change where the force application
                 }
             }
         }

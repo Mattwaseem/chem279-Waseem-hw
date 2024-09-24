@@ -16,6 +16,29 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 # Add the executable with source files
 add_executable(ljpotenial src/main.cpp src/file_io.cpp src/LJ_PE.cpp)
 
+# Ensure the input directory exists
+add_custom_command(
+    OUTPUT sample_input/Energy
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/sample_input/Energy
+    COMMENT "Ensuring sample_input/Energy directory exists"
+)
+
+# Run ljpotenial to generate the truncation_error_Problem2.txt
+# Set the WORKING_DIRECTORY to the root project folder to access the correct input files.
+add_custom_command(
+    OUTPUT truncation_error_Problem2.txt
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ljpotenial
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}  # Ensure the correct working directory
+    DEPENDS sample_input/Energy
+    COMMENT "Running ljpotenial to generate truncation_error_Problem2.txt"
+)
+
+# Add a custom target to run ljpotenial
+add_custom_target(
+    run_ljpotenial ALL
+    DEPENDS truncation_error_Problem2.txt
+)
+
 # Custom target to clean the bin directory
 add_custom_target(
     clean-bin
@@ -28,29 +51,4 @@ add_custom_target(
     clean-all
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}/* ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/*
     COMMENT "Cleaning all build and bin directories"
-)
-
-# Step 1: Generate the output file by running ljpotenial executable
-add_custom_command(
-    OUTPUT truncation_error.txt
-    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ljpotenial
-    COMMENT "Running ljpotenial to generate truncation_error.txt"
-)
-
-# Step 2: Run the Python script to generate the plot
-add_custom_command(
-    OUTPUT plot.png
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/plot_truncation_error.py
-    DEPENDS truncation_error.txt
-    COMMENT "Running Python script to generate plot.png"
-)
-
-# Step 3: Add a custom target to make sure the Python script runs after the C++ executable
-add_custom_target(run_plot ALL DEPENDS plot.png)
-
-# Custom target to build everything, including the plot
-add_custom_target(
-    all_plot
-    DEPENDS run_plot ljpotenial
-    COMMENT "Building ljpotenial and generating the plot"
 )
