@@ -15,7 +15,7 @@ std::vector<Atom> read_atoms_from_file(const std::string &filename)
     int atomic_number;
     double x, y, z;
 
-    infile >> num_atoms; // Ignore the first line which is the number of atoms in the system
+    infile >> num_atoms; // This ignores the first line which is the number of atoms in the file based on the formatting of the txt files
 
     while (infile >> atomic_number >> x >> y >> z)
     {

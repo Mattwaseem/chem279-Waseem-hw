@@ -10,7 +10,7 @@ struct Atom
     double x, y, z;
 };
 
-// Function declaration to read atoms from a file
+// Fxn declaration to read atoms from a file
 std::vector<Atom> read_atoms_from_file(const std::string &filename);
 
 #endif // FILE_IO_H

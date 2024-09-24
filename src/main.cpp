@@ -48,6 +48,18 @@ int main()
                 std::cout << "  Forward difference force (Fx): " << forward_force << "\n";
                 std::cout << "  Central difference force (Fx): " << central_force << "\n";
             }
+
+            // Perform optimization using steepest descent
+            std::cout << "\nPerforming optimization using steepest descent...\n";
+            std::vector<Atom> optimized_atoms = steepest_descent_optimization(atoms);
+
+            // Output optimized results
+            std::cout << "\nOptimized Lennard-Jones energy: " << calculate_total_energy(optimized_atoms) << " kcal/mol\n";
+            std::cout << "Optimized atomic positions:\n";
+            for (const auto &atom : optimized_atoms)
+            {
+                std::cout << "Atom " << atom.atomic_number << " at (" << atom.x << ", " << atom.y << ", " << atom.z << ")\n";
+            }
         }
     }
     catch (const std::exception &e)
