@@ -29,3 +29,28 @@ add_custom_target(
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_BINARY_DIR}/* ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/*
     COMMENT "Cleaning all build and bin directories"
 )
+
+# Step 1: Generate the output file by running ljpotenial executable
+add_custom_command(
+    OUTPUT truncation_error.txt
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ljpotenial
+    COMMENT "Running ljpotenial to generate truncation_error.txt"
+)
+
+# Step 2: Run the Python script to generate the plot
+add_custom_command(
+    OUTPUT plot.png
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/plot_truncation_error.py
+    DEPENDS truncation_error.txt
+    COMMENT "Running Python script to generate plot.png"
+)
+
+# Step 3: Add a custom target to make sure the Python script runs after the C++ executable
+add_custom_target(run_plot ALL DEPENDS plot.png)
+
+# Custom target to build everything, including the plot
+add_custom_target(
+    all_plot
+    DEPENDS run_plot ljpotenial
+    COMMENT "Building ljpotenial and generating the plot"
+)
