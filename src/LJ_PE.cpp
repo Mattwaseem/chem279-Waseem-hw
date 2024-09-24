@@ -66,7 +66,51 @@ std::vector<double> calculate_lj_force(const Atom &a1, const Atom &a2)
 
     return force;
 }
+// Numerical approx. for second derivative using central difference method for atom displacement
+double second_derivative(const std::vector<Atom> &atoms, int atom_index, double h) // *****
+{
+    std::vector<Atom> atoms_plus_h = atoms;
+    std::vector<Atom> atoms_minus_h = atoms;
 
+    // chang in the atom's position by +/- h in the x-direction
+    atoms_plus_h[atom_index].x += h;
+    atoms_minus_h[atom_index].x -= h;
+
+    // Calculate total energy for both perturbed configurations
+    double energy_plus_h = calculate_total_energy(atoms_plus_h);
+    double energy_minus_h = calculate_total_energy(atoms_minus_h);
+    double energy_original = calculate_total_energy(atoms);
+
+    // Use the central difference approximation for the second derivative
+    return (energy_plus_h - 2 * energy_original + energy_minus_h) / (h * h);
+}
+
+// Fxn to calculate truncation error using
+double truncation_error(double h, double second_derivative) // *****
+{
+    return 0.5 * h * std::abs(second_derivative); // *****
+}
+
+// Function to calculate round-off error
+double round_off_error(double h, double function_value) // *****
+{
+    const double epsilon = 1e-16;                  // Machine precision for double precision // *****
+    return epsilon * std::abs(function_value) / h; // *****
+}
+
+// Function to calculate total error
+double total_error(double h, double function_value, double second_derivative) // *****
+{
+    double trunc_error = truncation_error(h, second_derivative); // *****
+    double round_error = round_off_error(h, function_value);     // *****
+    return trunc_error + round_error;                            // *****
+}
+
+// Numerical approximation for second derivative using central difference method
+double second_derivative(double (*LJ_potential)(double), double x, double h) // *****
+{
+    return (LJ_potential(x + h) - 2 * LJ_potential(x) + LJ_potential(x - h)) / (h * h); // *****
+}
 //  implementing the forward, central diff force equations from lecture and lab slides
 
 // Forward difference approximation for the force
@@ -93,8 +137,8 @@ double central_difference_force(const std::vector<Atom> &atoms, int atom_index, 
 
     std::cout << "Energy at x+h: " << energy_plus_h << "\n";
     std::cout << "Energy at x-h: " << energy_minus_h << "\n";
-    std::cout << std::setprecision(15) << "Energy at x+h: " << energy_plus_h << "\n";
-    std::cout << std::setprecision(15) << "Energy at x-h: " << energy_minus_h << "\n";
+    std::cout << std::setprecision(15) << "Energy at x+h: " << energy_plus_h << "\n";  // debugging comment
+    std::cout << std::setprecision(15) << "Energy at x-h: " << energy_minus_h << "\n"; // debugging comment
 
     return -(energy_plus_h - energy_minus_h) / (2 * h);
 }

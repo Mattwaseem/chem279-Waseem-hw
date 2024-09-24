@@ -20,10 +20,22 @@ std::vector<double> calculate_lj_force(const Atom &a1, const Atom &a2);
 double forward_difference_force(const std::vector<Atom> &atoms, int atom_index, double h);
 double central_difference_force(const std::vector<Atom> &atoms, int atom_index, double h);
 
+// Function to calculate truncation error
+double truncation_error(double h, double second_derivative);
+
+// Function to calculate round-off error
+double round_off_error(double h, double function_value);
+
+// Function to calculate total error (sum of truncation and round-off errors)
+double total_error(double h, double function_value, double second_derivative);
+
+// Numerical approximation for second derivative (central difference method)
+double second_derivative(const std::vector<Atom> &atoms, int atom_index, double h);
+
 // Steepest descent optimizer
 const double STEP_SIZE = 0.01;
 
 std::vector<Atom> steepest_descent_optimization(std::vector<Atom> &atoms);
 double line_search(const std::vector<Atom> &atoms, const std::vector<std::vector<double>> &forces);
 
-#endif // LJ_PE_H
+#endif

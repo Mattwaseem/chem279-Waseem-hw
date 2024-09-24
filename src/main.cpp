@@ -41,8 +41,8 @@ int main()
             {
                 double forward_error_sum = 0.0;
                 double central_error_sum = 0.0;
+                double total_error_sum = 0.0; // for total error
 
-                // Compare forces for each atom (analytical vs forward difference vs central difference)
                 for (int i = 0; i < atoms.size(); ++i)
                 {
                     // Analytical force
@@ -54,24 +54,30 @@ int main()
                     // Central difference force for atom i
                     double central_force = central_difference_force(atoms, i, h);
 
+                    // Calculate second derivative for truncation error calculation
+                    double second_derivative_val = second_derivative(atoms, i, h); // Ensure this line is here
+
                     // Calculate truncation errors (sum of squared errors for x-component of force)
                     forward_error_sum += std::pow(analytical_force[0] - forward_force, 2);
                     central_error_sum += std::pow(analytical_force[0] - central_force, 2);
+
+                    // Calculate total error
+                    total_error_sum += total_error(h, calculate_total_energy(atoms), second_derivative_val); // Now passes total_energy and second_derivative_val
                 }
 
-                // Calculate my avg. errors
+                // Calculate average errors
                 double forward_error = std::sqrt(forward_error_sum / atoms.size());
                 double central_error = std::sqrt(central_error_sum / atoms.size());
+                double total_error_avg = std::sqrt(total_error_sum / atoms.size());
 
-                // Output the step size and errors into outfile
-                outfile << h << "," << forward_error << "," << central_error << "\n";
+                // Output the step size and errors
+                outfile << h << "," << forward_error << "," << central_error << "," << total_error_avg << "\n";
 
-                // Also prints the errors to the console
                 std::cout << "\nFor step size h = " << h << ":\n";
                 std::cout << "  Forward difference error: " << forward_error << "\n";
                 std::cout << "  Central difference error: " << central_error << "\n";
+                std::cout << "  Total error: " << total_error_avg << "\n";
             }
-
             // Perform optimization using steepest descent
             std::cout << "\nPerforming optimization using steepest descent...\n";
             std::vector<Atom> optimized_atoms = steepest_descent_optimization(atoms);

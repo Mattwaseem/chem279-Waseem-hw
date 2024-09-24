@@ -66,7 +66,7 @@ include CMakeFiles/run_ljpotenial.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/run_ljpotenial.dir/progress.make
 
-CMakeFiles/run_ljpotenial: truncation_error_Problem2.txt
+CMakeFiles/run_ljpotenial: /Users/nematsfolder/chem279/homework1/truncation_error_Problem2.txt
 
 truncation_error_Problem2.txt: sample_input/Energy
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/nematsfolder/chem279/homework1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Running ljpotenial to generate truncation_error_Problem2.txt"
